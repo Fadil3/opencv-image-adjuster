@@ -75,7 +75,7 @@ const ImageAdjuster: React.FC<ImageAdjusterProps> = ({ imageFile }) => {
     if (imageUrl) {
       const link = document.createElement('a');
       link.href = imageUrl;
-      link.download = 'adjusted-image.png'; // Specify the download file name
+      link.download = 'adjusted-image.png';
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
@@ -97,6 +97,8 @@ const ImageAdjuster: React.FC<ImageAdjusterProps> = ({ imageFile }) => {
 
   const handleReset = () => {
     setAdjustments({ brightness: 0, contrast: 0, colorFilter: '' });
+    setPrevAdjustments({ brightness: 0, contrast: 0, colorFilter: '' });
+    setIsAdjusted(false)
     if (imageFile) {
       const url = URL.createObjectURL(imageFile);
       setImageUrl(url);
@@ -106,17 +108,17 @@ const ImageAdjuster: React.FC<ImageAdjusterProps> = ({ imageFile }) => {
 
   if (!imageUrl) {
     return (
-      <div className="my-6 p-8 bg-gray-100 rounded-lg flex flex-col items-center justify-center">
+      <div className="my-6 p-4 xl:p-8 bg-gray-100 rounded-lg flex flex-col items-center justify-center">
         <img src={ImageIcon} className="w-16 h-16 text-gray-400 mb-4" />
-        <p className="text-gray-600 text-center">
-          No image uploaded yet. Please upload an image to apply filters.
+        <p className="text-gray-600 text-center font-medium">
+          No image uploaded yet. <br /> Please upload an image to apply filters.
         </p>
       </div>
     );
   }
 
   return (
-    <div className="mt-4 flex flex-col items-center justify-center">
+    <div className="mt-4 flex flex-col items-center justify-center w-full">
       <img
         src={imageUrl}
         alt="Uploaded"
@@ -125,13 +127,13 @@ const ImageAdjuster: React.FC<ImageAdjusterProps> = ({ imageFile }) => {
           window.open(imageUrl, '_blank');
         }}
       />
-      <div className="flex flex-col gap-4">
+      <div className="flex flex-col gap-4 w-full">
         <div className="flex flex-col gap-2">
           <label
             htmlFor="brightness"
             className="block text-sm font-medium mb-2 text-gray-300"
           >
-            Brightness:  {adjustments.brightness}%
+            Brightness: {adjustments.brightness}%
           </label>
           <input
             name="brightness"
@@ -143,7 +145,6 @@ const ImageAdjuster: React.FC<ImageAdjusterProps> = ({ imageFile }) => {
             onChange={handleAdjustmentChange}
             className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
           />
-
         </div>
         <div className="flex flex-col gap-2">
           <label
@@ -162,27 +163,25 @@ const ImageAdjuster: React.FC<ImageAdjusterProps> = ({ imageFile }) => {
             onChange={handleAdjustmentChange}
             className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
           />
-
         </div>
         <div className="flex flex-col gap-2 mb-4">
           <label className="block text-sm font-medium mb-2 text-gray-300">
             Effects:
           </label>
-          <div className="">
-            <div className="flex gap-4">
-              {availableFilter.map((item, index) => (
-                <button
-                  key={`${item}-${index}`}
-                  onClick={() => handleColorFilterChange(item)}
-                  className={`px-4 py-2 rounded-md text-sm font-medium ${adjustments.colorFilter === item ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-800 hover:bg-gray-300 '} rounded-md text-center shadow`}
-                >
-                  {item}
-                </button>
-              ))}
-            </div>
+          <div className="flex flex-col gap-4 xl:flex-row">
+            {availableFilter.map((item, index) => (
+              <button
+                key={`${item}-${index}`}
+                onClick={() => handleColorFilterChange(item)}
+                className={`px-4 py-2 rounded-md text-sm font-medium ${adjustments.colorFilter === item ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-800 hover:bg-gray-300 '} rounded-md text-center shadow`}
+              >
+                {item}
+              </button>
+            ))}
           </div>
         </div>
-        <div className="flex gap-8">
+        <hr />
+        <div className="flex flex-col gap-4 xl:flex-row xl:gap-8">
           <button
             onClick={handleApplyAdjustment}
             disabled={!openCVLoaded}
