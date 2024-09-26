@@ -1,50 +1,18 @@
-# React + TypeScript + Vite
+# OpenCV image adjuster
+This project using OpenCV to adjust and or add filter like `sephia`, `negative`, and `black and white`.
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+![2024-09-26 17-29-29](https://github.com/user-attachments/assets/8f5766a9-d6d2-4f82-a8b6-b286b2d2ef3d)
 
-Currently, two official plugins are available:
+## Live demo
+https://opencv-image-adjuster.vercel.app/
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Tech stack
+- React + Ts + Vite
+- TailwindCSS
+- OpenCV.js
 
-## Expanding the ESLint configuration
+## How to run this project
+- Clone the repository
+- run `npm install`
+- run `npm run dev` for development mode or `npm run build` then `npm run preview` for production build
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
-
-- Configure the top-level `parserOptions` property like this:
-
-```js
-export default tseslint.config({
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-});
-```
-
-- Replace `tseslint.configs.recommended` to `tseslint.configs.recommendedTypeChecked` or `tseslint.configs.strictTypeChecked`
-- Optionally add `...tseslint.configs.stylisticTypeChecked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and update the config:
-
-```js
-// eslint.config.js
-import react from 'eslint-plugin-react';
-
-export default tseslint.config({
-  // Set the react version
-  settings: { react: { version: '18.3' } },
-  plugins: {
-    // Add the react plugin
-    react,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended rules
-    ...react.configs.recommended.rules,
-    ...react.configs['jsx-runtime'].rules,
-  },
-});
-```
