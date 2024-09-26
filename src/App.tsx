@@ -11,12 +11,14 @@ function App() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-100">
-      <Header />
-      <main className="container mx-auto px-4 py-8">
-        <ImageUploader onImageUpload={handleImageUpload} />
-        <ImageAdjuster imageFile={uploadedImage} />
-      </main>
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-900 via-purple-900 to-violet-900">
+      <div className="max-w-lg w-full mx-4 p-8 rounded-2xl shadow-2xl bg-gray-800 bg-opacity-90 backdrop-blur-md">
+        <Header />
+        <main className="container mx-auto px-4 py-8">
+          <ImageUploader onImageUpload={handleImageUpload} />
+          <ImageAdjuster imageFile={uploadedImage} />
+        </main>
+      </div>
     </div>
   );
 }

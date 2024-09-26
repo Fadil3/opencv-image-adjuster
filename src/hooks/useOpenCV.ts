@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 
 declare global {
   interface Window {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     cv: any;
   }
 }
@@ -11,7 +12,8 @@ export function useOpenCV() {
 
   useEffect(() => {
     const script = document.createElement('script');
-    script.src = 'https://pub-2bd8244c47ec451896eceeaa54e9613e.r2.dev/opencv.js';
+    script.src =
+      'https://pub-2bd8244c47ec451896eceeaa54e9613e.r2.dev/opencv.js';
     script.async = true;
     script.onload = () => {
       if (window.cv) {
