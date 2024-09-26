@@ -1,7 +1,12 @@
-
 import React, { useState, useEffect } from 'react';
+import ImageIcon from '/image-icon.svg';
 import { useOpenCV } from '../hooks/useOpenCV';
-import { applyChainedFilters, blackAndWhiteFilter, negativeFilter, sephiaFilter } from '../utils/imageProcessing';
+import {
+  applyChainedFilters,
+  blackAndWhiteFilter,
+  negativeFilter,
+  sephiaFilter,
+} from '../utils/imageProcessing';
 
 interface ImageAdjusterProps {
   imageFile: File | null;
@@ -9,13 +14,21 @@ interface ImageAdjusterProps {
 
 const ImageAdjuster: React.FC<ImageAdjusterProps> = ({ imageFile }) => {
   const [imageUrl, setImageUrl] = useState<string | null>(null);
-  const [adjustments, setAdjustments] = useState({ brightness: 0, contrast: 0, colorFilter: "" });
-  const [prevAdjustments, setPrevAdjustments] = useState({ brightness: 0, contrast: 0, colorFilter: "" });
+  const [adjustments, setAdjustments] = useState({
+    brightness: 0,
+    contrast: 0,
+    colorFilter: '',
+  });
+  const [prevAdjustments, setPrevAdjustments] = useState({
+    brightness: 0,
+    contrast: 0,
+    colorFilter: '',
+  });
   const [isAdjusted, setIsAdjusted] = useState(false);
 
   const openCVLoaded = useOpenCV();
 
-  const availableFilter = ['Sephia', "Negative", "Black and White"]
+  const availableFilter = ['Sephia', 'Negative', 'Black and White'];
 
   useEffect(() => {
     if (imageFile) {
@@ -26,11 +39,14 @@ const ImageAdjuster: React.FC<ImageAdjusterProps> = ({ imageFile }) => {
   }, [imageFile]);
 
   const handleAdjustmentChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setAdjustments(prev => ({ ...prev, [e.target.name]: Number(e.target.value) }));
+    setAdjustments((prev) => ({
+      ...prev,
+      [e.target.name]: Number(e.target.value),
+    }));
   };
 
   const handleColorFilterChange = (filter: string) => {
-    setAdjustments(prev => ({ ...prev, colorFilter: filter }));
+    setAdjustments((prev) => ({ ...prev, colorFilter: filter }));
   };
 
   const handleApplyAdjustment = () => {
@@ -38,7 +54,12 @@ const ImageAdjuster: React.FC<ImageAdjusterProps> = ({ imageFile }) => {
       const img = new Image();
       img.onload = () => {
         const colorEffectFunction = getColorEffect(adjustments.colorFilter);
-        const adjustedImageUrl = applyChainedFilters(img, adjustments.brightness, adjustments.contrast, colorEffectFunction);
+        const adjustedImageUrl = applyChainedFilters(
+          img,
+          adjustments.brightness,
+          adjustments.contrast,
+          colorEffectFunction
+        );
 
         if (JSON.stringify(adjustments) !== JSON.stringify(prevAdjustments)) {
           setImageUrl(adjustedImageUrl);
@@ -63,11 +84,11 @@ const ImageAdjuster: React.FC<ImageAdjusterProps> = ({ imageFile }) => {
 
   const getColorEffect = (filterName: string) => {
     switch (filterName) {
-      case "Sephia":
+      case 'Sephia':
         return sephiaFilter;
-      case "Negative":
+      case 'Negative':
         return negativeFilter;
-      case "Black and White":
+      case 'Black and White':
         return blackAndWhiteFilter;
       default:
         return () => (data: Uint8ClampedArray) => data;
@@ -75,77 +96,111 @@ const ImageAdjuster: React.FC<ImageAdjusterProps> = ({ imageFile }) => {
   };
 
   const handleReset = () => {
-    setAdjustments({ brightness: 0, contrast: 0, colorFilter: "" });
+    setAdjustments({ brightness: 0, contrast: 0, colorFilter: '' });
     if (imageFile) {
       const url = URL.createObjectURL(imageFile);
       setImageUrl(url);
       return () => URL.revokeObjectURL(url);
     }
-  }
+  };
 
   if (!imageUrl) {
-    return <div className="text-center mt-4">No image uploaded</div>;
+    return (
+      <div className="my-6 p-8 bg-gray-100 rounded-lg flex flex-col items-center justify-center">
+        <img src={ImageIcon} className="w-16 h-16 text-gray-400 mb-4" />
+        <p className="text-gray-600 text-center">
+          No image uploaded yet. Please upload an image to apply filters.
+        </p>
+      </div>
+    );
   }
 
   return (
-    <div className="mt-4 flex items-center justify-center">
-      <img src={imageUrl} alt="Uploaded" className="mx-auto w-[6/12] h-auto mb-4" />
-      <div className="flex flex-col">
-        <div className="flex mb-4">
-          <label htmlFor="brightness" className="mr-2">Brightness:</label>
+    <div className="mt-4 flex flex-col items-center justify-center">
+      <img
+        src={imageUrl}
+        alt="Uploaded"
+        className="w-full h-auto rounded-lg mb-4 border"
+        onClick={() => {
+          window.open(imageUrl, '_blank');
+        }}
+      />
+      <div className="flex flex-col gap-4">
+        <div className="flex flex-col gap-2">
+          <label
+            htmlFor="brightness"
+            className="block text-sm font-medium mb-2 text-gray-300"
+          >
+            Brightness:  {adjustments.brightness}%
+          </label>
           <input
-            name='brightness'
+            name="brightness"
             type="range"
             id="brightness"
             min="-100"
             max="100"
             value={adjustments.brightness}
             onChange={handleAdjustmentChange}
-            className="w-full"
+            className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
           />
-          <span className="ml-2">{adjustments.brightness}</span>
+
         </div>
-        <div className="flex mb-4">
-          <label htmlFor="contrast" className="mr-2">Contrast:</label>
+        <div className="flex flex-col gap-2">
+          <label
+            htmlFor="brightness"
+            className="block text-sm font-medium mb-2 text-gray-300"
+          >
+            Contrast: {adjustments.contrast}%
+          </label>
           <input
-            name='contrast'
+            name="contrast"
             type="range"
             id="contrast"
             min="-100"
             max="100"
             value={adjustments.contrast}
             onChange={handleAdjustmentChange}
-            className="w-full"
+            className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
           />
-          <span className="ml-2">{adjustments.contrast}</span>
+
         </div>
-        <div className="flex items-center gap-2 mb-4">
-          <span>Effects:</span>
-          <div className="flex gap-4">
-            {availableFilter.map((item, index) =>
-              <button key={`${item}-${index}`} onClick={() => handleColorFilterChange(item)} className={`px-4 py-2 font-semibold ${adjustments.colorFilter === item ? 'bg-slate-400 text-white' : "bg-none border-2"} rounded-md text-center`}>{item}</button>
-            )}
+        <div className="flex flex-col gap-2 mb-4">
+          <label className="block text-sm font-medium mb-2 text-gray-300">
+            Effects:
+          </label>
+          <div className="">
+            <div className="flex gap-4">
+              {availableFilter.map((item, index) => (
+                <button
+                  key={`${item}-${index}`}
+                  onClick={() => handleColorFilterChange(item)}
+                  className={`px-4 py-2 rounded-md text-sm font-medium ${adjustments.colorFilter === item ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-800 hover:bg-gray-300 '} rounded-md text-center shadow`}
+                >
+                  {item}
+                </button>
+              ))}
+            </div>
           </div>
         </div>
         <div className="flex gap-8">
           <button
             onClick={handleApplyAdjustment}
             disabled={!openCVLoaded}
-            className="bg-blue-500 text-white px-4 py-2 rounded disabled:bg-gray-300"
+            className="px-4 py-2 rounded-md text-sm font-medium bg-blue-600 text-white disabled:bg-gray-600"
           >
             Apply Adjustment
           </button>
           <button
             onClick={handleReset}
             disabled={!openCVLoaded}
-            className="bg-red-500 text-white px-4 py-2 rounded disabled:bg-gray-300"
+            className="px-4 py-2 rounded-md text-sm font-medium bg-red-600 text-white disabled:bg-gray-600"
           >
-            Reset
+            Reset Effect
           </button>
           <button
             onClick={handleDownload}
-            disabled={!imageUrl || !isAdjusted} // Enable only if adjustments have been applied
-            className="bg-green-500 text-white px-4 py-2 rounded disabled:bg-gray-300"
+            disabled={!imageUrl || !isAdjusted}
+            className="px-4 py-2 rounded-md text-sm font-medium bg-green-600 text-white disabled:bg-gray-600"
           >
             Download Image
           </button>
@@ -155,5 +210,4 @@ const ImageAdjuster: React.FC<ImageAdjusterProps> = ({ imageFile }) => {
   );
 };
 
-
-export default ImageAdjuster
+export default ImageAdjuster;
